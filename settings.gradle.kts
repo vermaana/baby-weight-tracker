@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Baby weight tracker"
-include ':app'
+include(":app")
