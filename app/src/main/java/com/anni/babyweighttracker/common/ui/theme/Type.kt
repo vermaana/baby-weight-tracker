@@ -1,4 +1,4 @@
-package com.anni.babyweighttracker.ui.theme
+package com.anni.babyweighttracker.common.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
