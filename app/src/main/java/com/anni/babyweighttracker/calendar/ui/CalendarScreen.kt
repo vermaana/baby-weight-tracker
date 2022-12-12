@@ -48,7 +48,11 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel = viewModel()) {
                 is ResultState.Waiting -> calendarViewModel.loadCalendarDaysForSelectedMonth()
                 is ResultState.Loading -> CircularProgressIndicator()
                 is ResultState.Success -> {
-                    CalendarHeading(monthYear = "${calendarViewModel.getCurrentMonthAsString()} ${calendarViewModel.getCurrentYearAsString()}")
+                    CalendarHeading(
+                        monthYear = "${calendarViewModel.getCurrentMonthAsString()} ${calendarViewModel.getCurrentYearAsString()}",
+                        nextButtonClicked = { calendarViewModel.nextMonth() },
+                        previousButtonClicked = { calendarViewModel.previousMonth() }
+                    )
                     Spacer(modifier = Modifier.size(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         CalendarDates(day = stringResource(id = R.string.sunday), calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY })
@@ -74,16 +78,16 @@ private fun Heading() {
 }
 
 @Composable
-private fun CalendarHeading(monthYear: String) {
+private fun CalendarHeading(monthYear: String, nextButtonClicked: () -> Unit, previousButtonClicked: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = monthYear, textAlign = TextAlign.Start, fontSize = 24.sp)
         Row {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = previousButtonClicked) {
                 Icon(imageVector = Icons.Filled.ArrowBack, "")
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = nextButtonClicked) {
                 Icon(imageVector = Icons.Filled.ArrowForward, "")
             }
         }

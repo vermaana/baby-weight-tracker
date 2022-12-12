@@ -14,12 +14,12 @@ internal class CalendarViewModel : ViewModel() {
     private val _calendarDaysStatus = MutableStateFlow<ResultState<List<CalendarDay>>>(ResultState.Waiting)
     internal val calendarDaysStatus = _calendarDaysStatus.asStateFlow()
 
-    private var todayYear = LocalDate.now().year
     private var todayMonth = LocalDate.now().month
+    private var todayYear = LocalDate.now().year
 
     internal fun loadCalendarDaysForSelectedMonth() {
         val days = listOf(DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY)
-        val todayDayOfWeek = LocalDate.of(todayYear, LocalDate.now().month, 1).dayOfWeek
+        val todayDayOfWeek = LocalDate.of(todayYear, todayMonth, 1).dayOfWeek
         val totalDays = YearMonth.of(todayYear, todayMonth).lengthOfMonth()
         val calendarDays = arrayListOf<CalendarDay>()
 
