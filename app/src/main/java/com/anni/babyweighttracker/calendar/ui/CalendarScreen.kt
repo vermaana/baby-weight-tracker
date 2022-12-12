@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,13 +51,13 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel = viewModel()) {
                     CalendarHeading(monthYear = "${calendarViewModel.getCurrentMonthAsString()} ${calendarViewModel.getCurrentYearAsString()}")
                     Spacer(modifier = Modifier.size(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                        CalendarDates(day = "Sun", calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY })
-                        CalendarDates(day = "Mon", calendarDaysStatus.result.filter { it.day == DayOfWeek.MONDAY })
-                        CalendarDates(day = "Tue", calendarDaysStatus.result.filter { it.day == DayOfWeek.TUESDAY })
-                        CalendarDates(day = "Wed", calendarDaysStatus.result.filter { it.day == DayOfWeek.WEDNESDAY })
-                        CalendarDates(day = "Thu", calendarDaysStatus.result.filter { it.day == DayOfWeek.THURSDAY })
-                        CalendarDates(day = "Fri", calendarDaysStatus.result.filter { it.day == DayOfWeek.FRIDAY })
-                        CalendarDates(day = "Sat", calendarDaysStatus.result.filter { it.day == DayOfWeek.SATURDAY })
+                        CalendarDates(day = stringResource(id = R.string.sunday), calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY })
+                        CalendarDates(day = stringResource(id = R.string.monday), calendarDaysStatus.result.filter { it.day == DayOfWeek.MONDAY })
+                        CalendarDates(day = stringResource(id = R.string.tuesday), calendarDaysStatus.result.filter { it.day == DayOfWeek.TUESDAY })
+                        CalendarDates(day = stringResource(id = R.string.wednesday), calendarDaysStatus.result.filter { it.day == DayOfWeek.WEDNESDAY })
+                        CalendarDates(day = stringResource(id = R.string.thursday), calendarDaysStatus.result.filter { it.day == DayOfWeek.THURSDAY })
+                        CalendarDates(day = stringResource(id = R.string.friday), calendarDaysStatus.result.filter { it.day == DayOfWeek.FRIDAY })
+                        CalendarDates(day = stringResource(id = R.string.saturday), calendarDaysStatus.result.filter { it.day == DayOfWeek.SATURDAY })
                     }
                 }
                 is ResultState.Error -> {
@@ -92,7 +93,7 @@ private fun CalendarHeading(monthYear: String) {
 @Composable
 private fun CalendarDates(day: String, affectedDay: List<CalendarDay>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = day)
+        Text(text = day, fontWeight = FontWeight.Bold)
         affectedDay.forEach {
             val toDisplay = if (it.date == -1) Pair("", "") else Pair("${it.date}", "(9999g)")
             Spacer(modifier = Modifier.size(10.dp))
