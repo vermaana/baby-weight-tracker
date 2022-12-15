@@ -1,5 +1,6 @@
 package com.anni.babyweighttracker.calendar.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -24,14 +25,14 @@ import java.time.DayOfWeek
 
 internal const val CALENDAR_SCREEN_ROUTE = "CALENDAR_SCREEN_ROUTE"
 
-internal fun NavGraphBuilder.calendarScreenRoute() {
+internal fun NavGraphBuilder.calendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (CalendarDay) -> Unit) {
     composable(route = CALENDAR_SCREEN_ROUTE) {
-        CalendarScreen()
+        CalendarScreen(calendarViewModel = calendarViewModel, enterWeight = enterWeight)
     }
 }
 
 @Composable
-private fun CalendarScreen(calendarViewModel: CalendarViewModel = viewModel()) {
+private fun CalendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (CalendarDay) -> Unit) {
     val calendarDaysStatus = calendarViewModel.calendarDaysStatus.collectAsState().value
 
     Surface {
@@ -55,13 +56,27 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel = viewModel()) {
                     )
                     Spacer(modifier = Modifier.size(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                        CalendarDates(day = stringResource(id = R.string.sunday), calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY })
-                        CalendarDates(day = stringResource(id = R.string.monday), calendarDaysStatus.result.filter { it.day == DayOfWeek.MONDAY })
-                        CalendarDates(day = stringResource(id = R.string.tuesday), calendarDaysStatus.result.filter { it.day == DayOfWeek.TUESDAY })
-                        CalendarDates(day = stringResource(id = R.string.wednesday), calendarDaysStatus.result.filter { it.day == DayOfWeek.WEDNESDAY })
-                        CalendarDates(day = stringResource(id = R.string.thursday), calendarDaysStatus.result.filter { it.day == DayOfWeek.THURSDAY })
-                        CalendarDates(day = stringResource(id = R.string.friday), calendarDaysStatus.result.filter { it.day == DayOfWeek.FRIDAY })
-                        CalendarDates(day = stringResource(id = R.string.saturday), calendarDaysStatus.result.filter { it.day == DayOfWeek.SATURDAY })
+                        CalendarDates(day = stringResource(id = R.string.sunday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.monday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.MONDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.tuesday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.TUESDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.wednesday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.WEDNESDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.thursday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.THURSDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.friday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.FRIDAY }) {
+                            enterWeight(it)
+                        }
+                        CalendarDates(day = stringResource(id = R.string.saturday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.SATURDAY }) {
+                            enterWeight(it)
+                        }
                     }
                 }
                 is ResultState.Error -> {
@@ -95,14 +110,19 @@ private fun CalendarHeading(monthYear: String, nextButtonClicked: () -> Unit, pr
 }
 
 @Composable
-private fun CalendarDates(day: String, affectedDay: List<CalendarDay>) {
+private fun CalendarDates(day: String, affectedDay: List<CalendarDay>, dateClicked: (CalendarDay) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = day, fontWeight = FontWeight.Bold)
         affectedDay.forEach {
             val toDisplay = if (it.date == -1) Pair("", "") else Pair("${it.date}", "(9999g)")
             Spacer(modifier = Modifier.size(10.dp))
-            Text(text = toDisplay.first)
-            Text(text = toDisplay.second, fontSize = 10.sp)
+            Column(
+                modifier = Modifier.clickable { dateClicked(it) },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = toDisplay.first)
+                Text(text = toDisplay.second, fontSize = 10.sp)
+            }
         }
     }
 }

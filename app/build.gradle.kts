@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -55,4 +56,6 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.3.2")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.compose.material:material:1.3.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }

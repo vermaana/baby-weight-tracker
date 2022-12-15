@@ -1,5 +1,8 @@
 package com.anni.babyweighttracker.calendar.model
 
+import kotlinx.serialization.Serializable
 import java.time.DayOfWeek
+import java.time.Month
 
-data class CalendarDay(val day: DayOfWeek, val date: Int)
+@Serializable
+data class CalendarDay(val date: Int, val month: Month, val year: Int, val day: DayOfWeek)
