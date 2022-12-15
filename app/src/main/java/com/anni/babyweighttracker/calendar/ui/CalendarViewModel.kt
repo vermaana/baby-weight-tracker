@@ -22,29 +22,33 @@ internal class CalendarViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
     @Named("IoDispatcher") private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    private val _calendarDaysStatus = MutableStateFlow<ResultState<List<CalendarDay>>>(ResultState.Waiting)
-    internal val calendarDaysStatus = _calendarDaysStatus.asStateFlow()
+    private val _monthStatus = MutableStateFlow<ResultState<List<CalendarDay>>>(ResultState.Waiting)
+    internal val monthStatus = _monthStatus.asStateFlow()
 
-    private var todayMonth = LocalDate.now().month
-    private var todayYear = LocalDate.now().year
+    private val _dayStatus = MutableStateFlow<ResultState<CalendarDay?>>(ResultState.Waiting)
+    internal val dayStatus = _dayStatus.asStateFlow()
 
-    internal fun loadCalendarDaysForSelectedMonth() {
+    private var selectedDate = LocalDate.now().dayOfMonth
+    private var selectedMonth = LocalDate.now().month
+    private var selectedYear = LocalDate.now().year
+
+    internal fun loadDataForSelectedMonth() {
         viewModelScope.launch(ioDispatcher) {
             val days = listOf(DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY)
-            val todayDayOfWeek = LocalDate.of(todayYear, todayMonth, 1).dayOfWeek
-            val totalDays = YearMonth.of(todayYear, todayMonth).lengthOfMonth()
+            val todayDayOfWeek = LocalDate.of(selectedYear, selectedMonth, 1).dayOfWeek
+            val totalDays = YearMonth.of(selectedYear, selectedMonth).lengthOfMonth()
             val calendarDays = arrayListOf<CalendarDay>()
 
-            _calendarDaysStatus.value = ResultState.Loading
+            _monthStatus.value = ResultState.Loading
 
             //Get weight record for selected month
-            val weightRecord = calendarRepository.getWeightRecordOfSpecificMonth(month = todayMonth.value, year = todayYear)
+            val weightRecord = calendarRepository.getWeightRecordOfSpecificMonth(month = selectedMonth.value, year = selectedYear)
 
             //Add each date
             var pos = days.indexOf(todayDayOfWeek)
             for (date in 1..totalDays) {
-                val weightInGrams = weightRecord?.firstOrNull { it.entryDate == date }?.weightInGrams
-                calendarDays.add(CalendarDay(date = date, month = todayMonth.value, year = todayYear, day = days[pos], weightInGrams = weightInGrams))
+                val weightInGrams = weightRecord?.firstOrNull { it.date == date }?.weightInGrams
+                calendarDays.add(CalendarDay(date = date, month = selectedMonth.value, year = selectedYear, day = days[pos], weightInGrams = weightInGrams))
                 pos++
                 if (pos > days.size - 1) pos = 0
             }
@@ -53,29 +57,37 @@ internal class CalendarViewModel @Inject constructor(
             for (j in days.indexOf(calendarDays.first().day) - 1 downTo 0) {
                 calendarDays.add(
                     index = 0,
-                    element = CalendarDay(date = -1, month = todayMonth.value, year = todayYear, day = days[j], weightInGrams = null)
+                    element = CalendarDay(date = -1, month = selectedMonth.value, year = selectedYear, day = days[j], weightInGrams = null)
                 )
             }
 
-            _calendarDaysStatus.value = ResultState.Success(calendarDays)
+            _monthStatus.value = ResultState.Success(calendarDays)
+        }
+    }
+
+    internal fun loadDataForSelectedDate() {
+        viewModelScope.launch(ioDispatcher) {
+            _dayStatus.value = ResultState.Loading
+            val weightRecordForSelectedDate = calendarRepository.getWeightRecordOfSpecificDate(date = selectedDate, month = selectedMonth.value, year = selectedYear)
+            _dayStatus.value = ResultState.Success(weightRecordForSelectedDate)
         }
     }
 
     internal fun nextMonth() {
-        todayMonth = todayMonth.plus(1)
-        if (todayMonth == Month.JANUARY)
-            todayYear = todayYear.plus(1)
-        _calendarDaysStatus.value = ResultState.Waiting
+        selectedMonth = selectedMonth.plus(1)
+        if (selectedMonth == Month.JANUARY)
+            selectedYear = selectedYear.plus(1)
+        _monthStatus.value = ResultState.Waiting
     }
 
     internal fun previousMonth() {
-        todayMonth = todayMonth.minus(1)
-        if (todayMonth == Month.DECEMBER)
-            todayYear = todayYear.minus(1)
-        _calendarDaysStatus.value = ResultState.Waiting
+        selectedMonth = selectedMonth.minus(1)
+        if (selectedMonth == Month.DECEMBER)
+            selectedYear = selectedYear.minus(1)
+        _monthStatus.value = ResultState.Waiting
     }
 
-    internal fun getCurrentMonthAsString(): String = todayMonth.name
+    internal fun getCurrentMonthAsString(): String = selectedMonth.name
 
-    internal fun getCurrentYearAsString(): String = todayYear.toString()
+    internal fun getCurrentYearAsString(): String = selectedYear.toString()
 }

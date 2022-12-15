@@ -32,7 +32,16 @@ internal fun NavGraphBuilder.calendarScreen(calendarViewModel: CalendarViewModel
 
 @Composable
 private fun CalendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (CalendarDay) -> Unit) {
-    val calendarDaysStatus = calendarViewModel.calendarDaysStatus.collectAsState().value
+    val monthStatus = calendarViewModel.monthStatus.collectAsState().value
+    val daysOfWeek = mapOf(
+        DayOfWeek.SUNDAY to R.string.sunday,
+        DayOfWeek.MONDAY to R.string.monday,
+        DayOfWeek.TUESDAY to R.string.tuesday,
+        DayOfWeek.WEDNESDAY to R.string.wednesday,
+        DayOfWeek.THURSDAY to R.string.thursday,
+        DayOfWeek.FRIDAY to R.string.friday,
+        DayOfWeek.SATURDAY to R.string.saturday,
+    )
 
     Surface {
         Column(
@@ -44,8 +53,8 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (C
             Heading()
             Spacer(modifier = Modifier.size(60.dp))
 
-            when (calendarDaysStatus) {
-                is ResultState.Waiting -> calendarViewModel.loadCalendarDaysForSelectedMonth()
+            when (monthStatus) {
+                is ResultState.Waiting -> calendarViewModel.loadDataForSelectedMonth()
                 is ResultState.Loading -> CircularProgressIndicator()
                 is ResultState.Success -> {
                     CalendarHeading(
@@ -55,26 +64,10 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (C
                     )
                     Spacer(modifier = Modifier.size(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                        CalendarDates(day = stringResource(id = R.string.sunday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.SUNDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.monday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.MONDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.tuesday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.TUESDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.wednesday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.WEDNESDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.thursday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.THURSDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.friday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.FRIDAY }) {
-                            enterWeight(it)
-                        }
-                        CalendarDates(day = stringResource(id = R.string.saturday), affectedDay = calendarDaysStatus.result.filter { it.day == DayOfWeek.SATURDAY }) {
-                            enterWeight(it)
+                        daysOfWeek.forEach { entry ->
+                            CalendarDates(day = stringResource(id = entry.value), affectedDay = monthStatus.result.filter { it.day == entry.key }) {
+                                enterWeight(it)
+                            }
                         }
                     }
                 }
@@ -117,7 +110,10 @@ private fun CalendarDates(day: String, affectedDay: List<CalendarDay>, dateClick
             val toDisplay = if (it.date == -1) Pair("", "") else Pair("${it.date}", weightInGrams)
             Spacer(modifier = Modifier.size(10.dp))
             Column(
-                modifier = Modifier.clickable { dateClicked(it) },
+                modifier = Modifier.clickable {
+                    if (it.date != -1)
+                        dateClicked(it)
+                },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = toDisplay.first)
