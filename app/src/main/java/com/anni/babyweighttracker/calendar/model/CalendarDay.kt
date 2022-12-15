@@ -4,4 +4,10 @@ import kotlinx.serialization.Serializable
 import java.time.DayOfWeek
 
 @Serializable
-data class CalendarDay(val date: Int, val month: Int, val year: Int, val day: DayOfWeek)
+data class CalendarDay(
+    val date: Int,
+    val month: Int,
+    val year: Int,
+    val day: DayOfWeek,
+    val weightInGrams: Int?
+)

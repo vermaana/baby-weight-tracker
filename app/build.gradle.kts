@@ -63,6 +63,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.3.1")
 
     implementation("androidx.room:room-runtime:2.4.3")
+    implementation("androidx.room:room-ktx:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")

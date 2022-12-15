@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anni.babyweighttracker.R
@@ -114,7 +113,8 @@ private fun CalendarDates(day: String, affectedDay: List<CalendarDay>, dateClick
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = day, fontWeight = FontWeight.Bold)
         affectedDay.forEach {
-            val toDisplay = if (it.date == -1) Pair("", "") else Pair("${it.date}", "(9999g)")
+            val weightInGrams = if (it.weightInGrams == null) "(No entry)" else it.weightInGrams.toString()
+            val toDisplay = if (it.date == -1) Pair("", "") else Pair("${it.date}", weightInGrams)
             Spacer(modifier = Modifier.size(10.dp))
             Column(
                 modifier = Modifier.clickable { dateClicked(it) },
