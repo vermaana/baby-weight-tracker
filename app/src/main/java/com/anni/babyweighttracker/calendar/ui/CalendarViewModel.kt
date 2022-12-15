@@ -28,7 +28,7 @@ internal class CalendarViewModel : ViewModel() {
         //Add each date
         var pos = days.indexOf(todayDayOfWeek)
         for (date in 1..totalDays) {
-            calendarDays.add(CalendarDay(date = date, month = todayMonth, year = todayYear, day = days[pos]))
+            calendarDays.add(CalendarDay(date = date, month = todayMonth.value, year = todayYear, day = days[pos]))
             pos++
             if (pos > days.size - 1) pos = 0
         }
@@ -37,7 +37,7 @@ internal class CalendarViewModel : ViewModel() {
         for (j in days.indexOf(calendarDays.first().day) - 1 downTo 0) {
             calendarDays.add(
                 index = 0,
-                element = CalendarDay(date = -1, month = todayMonth, year = todayYear, day = days[j])
+                element = CalendarDay(date = -1, month = todayMonth.value, year = todayYear, day = days[j])
             )
         }
 
