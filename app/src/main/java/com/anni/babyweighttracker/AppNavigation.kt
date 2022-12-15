@@ -1,7 +1,7 @@
 package com.anni.babyweighttracker
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.anni.babyweighttracker.calendar.ui.*
@@ -15,7 +15,7 @@ import kotlinx.serialization.json.Json
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val calendarViewModel = viewModel<CalendarViewModel>()
+    val calendarViewModel = hiltViewModel<CalendarViewModel>()
     NavHost(navController = navController, startDestination = CALENDAR_SCREEN_ROUTE) {
         calendarScreen(calendarViewModel = calendarViewModel) { calendarDay ->
             val calendarDayString = Json.encodeToString(calendarDay)
