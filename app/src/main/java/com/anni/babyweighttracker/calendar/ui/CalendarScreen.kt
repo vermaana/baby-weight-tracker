@@ -2,6 +2,7 @@ package com.anni.babyweighttracker.calendar.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,8 +10,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -147,7 +150,7 @@ private fun CalendarDates(day: String, affectedDay: List<CalendarDay>, todayDate
             Spacer(modifier = Modifier.size(10.dp))
             Column(
                 modifier = Modifier
-                    .clickable {
+                    .clickable(interactionSource = remember { MutableInteractionSource() }, indication = rememberRipple(color = Color.DarkGray)) {
                         if (it.date != -1)
                             dateClicked(it)
                     }

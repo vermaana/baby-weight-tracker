@@ -1,6 +1,7 @@
 package com.anni.babyweighttracker.calendar.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -24,6 +25,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.anni.babyweighttracker.R
 import com.anni.babyweighttracker.calendar.model.CalendarDay
+import com.anni.babyweighttracker.common.ui.theme.DARK_PINK_HEADING
+import com.anni.babyweighttracker.common.ui.theme.LIGHT_PINK_BACKGROUND
 import com.anni.babyweighttracker.common.util.ResultState
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -44,7 +47,7 @@ private fun WeightEntryScreen(calendarViewModel: CalendarViewModel, selectedCale
     val enteredWeight = rememberSaveable { mutableStateOf("") }
     val showEntryError = rememberSaveable { mutableStateOf(Pair(false, "")) }
 
-    Surface {
+    Surface(color = LIGHT_PINK_BACKGROUND) {
         IconButton(modifier = Modifier.padding(start = 20.dp, top = 40.dp), onClick = upIconClicked) {
             Icon(imageVector = Icons.Filled.ArrowBack, "")
         }
@@ -71,6 +74,7 @@ private fun WeightEntryScreen(calendarViewModel: CalendarViewModel, selectedCale
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column {
                     TextField(
+                        modifier = Modifier.background(color = DARK_PINK_HEADING),
                         label = { Text(text = stringResource(id = R.string.enter_weight_here)) },
                         value = enteredWeight.value,
                         onValueChange = { enteredWeight.value = it },
@@ -87,15 +91,18 @@ private fun WeightEntryScreen(calendarViewModel: CalendarViewModel, selectedCale
 
             when (saveStatus) {
                 is ResultState.Waiting -> {
-                    Button(onClick = {
-                        val weightToSave = enteredWeight.value.trim()
-                        if (weightToSave.isEmpty() || weightToSave.toIntOrNull() == null)
-                            showEntryError.value = Pair(true, "Please enter correct value here")
-                        else {
-                            showEntryError.value = Pair(false, "")
-                            calendarViewModel.saveDataForSelectedDate(selectedCalendarDay = selectedCalendarDay, weightInGrams = weightToSave.toInt())
-                        }
-                    }) {
+                    Button(
+                        onClick = {
+                            val weightToSave = enteredWeight.value.trim()
+                            if (weightToSave.isEmpty() || weightToSave.toIntOrNull() == null)
+                                showEntryError.value = Pair(true, "Please enter correct value here")
+                            else {
+                                showEntryError.value = Pair(false, "")
+                                calendarViewModel.saveDataForSelectedDate(selectedCalendarDay = selectedCalendarDay, weightInGrams = weightToSave.toInt())
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = DARK_PINK_HEADING)
+                    ) {
                         Text(text = stringResource(id = R.string.submit))
                     }
                 }
