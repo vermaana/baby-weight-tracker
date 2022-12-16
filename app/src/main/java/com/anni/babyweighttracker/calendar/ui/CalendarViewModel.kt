@@ -95,4 +95,10 @@ internal class CalendarViewModel @Inject constructor(
     internal fun getCurrentMonthAsString(): String = selectedMonth.name
 
     internal fun getCurrentYearAsString(): String = selectedYear.toString()
+
+    internal fun getTodayDate(): Int = LocalDate.now().dayOfMonth
+
+    internal fun getTodayMonth(): Int = LocalDate.now().month.value
+
+    internal fun getTodayYear(): Int = LocalDate.now().year
 }

@@ -103,7 +103,7 @@ private fun WeightEntryScreen(calendarViewModel: CalendarViewModel, selectedCale
                 is ResultState.Success -> {
                     Toast.makeText(LocalContext.current, stringResource(id = R.string.weight_record_successfully_added), Toast.LENGTH_SHORT).show()
                     calendarViewModel.resetMonthStatus()
-                    //TODO navigate back
+                    upIconClicked()
                 }
                 is ResultState.Error -> {
                     Toast.makeText(LocalContext.current, stringResource(id = R.string.error_occurred_try_again), Toast.LENGTH_SHORT).show()
