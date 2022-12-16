@@ -1,6 +1,7 @@
 package com.anni.babyweighttracker.di
 
-import com.anni.babyweighttracker.mapper.BabyWeightToCalendarDayMapper
+import com.anni.babyweighttracker.mapper.BabyWeightRecordToCalendarDayMapper
+import com.anni.babyweighttracker.mapper.CalendarDayToBabyWeightRecordMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,5 +11,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object MapperModule {
     @Provides
-    fun provideBabyWeightToCalendarDayMapper(): BabyWeightToCalendarDayMapper = BabyWeightToCalendarDayMapper()
+    fun provideBabyWeightRecordToCalendarDayMapper(): BabyWeightRecordToCalendarDayMapper = BabyWeightRecordToCalendarDayMapper()
+
+    @Provides
+    fun provideCalendarDayToBabyWeightRecordMapper(): CalendarDayToBabyWeightRecordMapper = CalendarDayToBabyWeightRecordMapper()
 }

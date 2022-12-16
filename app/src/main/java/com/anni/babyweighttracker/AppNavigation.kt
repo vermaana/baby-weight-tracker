@@ -21,6 +21,8 @@ fun AppNavigation() {
             val calendarDayString = Json.encodeToString(calendarDay)
             navController.navigate("$WEIGHT_ENTRY_SCREEN_ROUTE/$calendarDayString")
         }
-        weightEntryScreen(calendarViewModel = calendarViewModel)
+        weightEntryScreen(calendarViewModel = calendarViewModel) {
+            navController.navigateUp()
+        }
     }
 }

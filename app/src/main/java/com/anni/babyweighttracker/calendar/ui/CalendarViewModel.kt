@@ -25,10 +25,9 @@ internal class CalendarViewModel @Inject constructor(
     private val _monthStatus = MutableStateFlow<ResultState<List<CalendarDay>>>(ResultState.Waiting)
     internal val monthStatus = _monthStatus.asStateFlow()
 
-    private val _dayStatus = MutableStateFlow<ResultState<CalendarDay?>>(ResultState.Waiting)
-    internal val dayStatus = _dayStatus.asStateFlow()
+    private val _saveStatus = MutableStateFlow<ResultState<Boolean>>(ResultState.Waiting)
+    internal val saveStatus = _saveStatus.asStateFlow()
 
-    private var selectedDate = LocalDate.now().dayOfMonth
     private var selectedMonth = LocalDate.now().month
     private var selectedYear = LocalDate.now().year
 
@@ -65,11 +64,11 @@ internal class CalendarViewModel @Inject constructor(
         }
     }
 
-    internal fun loadDataForSelectedDate() {
+    internal fun saveDataForSelectedDate(selectedCalendarDay: CalendarDay, weightInGrams: Int) {
         viewModelScope.launch(ioDispatcher) {
-            _dayStatus.value = ResultState.Loading
-            val weightRecordForSelectedDate = calendarRepository.getWeightRecordOfSpecificDate(date = selectedDate, month = selectedMonth.value, year = selectedYear)
-            _dayStatus.value = ResultState.Success(weightRecordForSelectedDate)
+            _saveStatus.value = ResultState.Waiting
+            val saveResult = calendarRepository.insertWeightRecordOfSpecificDate(calendarDay = selectedCalendarDay, weightInGrams = weightInGrams)
+            _saveStatus.value = ResultState.Success(saveResult)
         }
     }
 
@@ -77,14 +76,20 @@ internal class CalendarViewModel @Inject constructor(
         selectedMonth = selectedMonth.plus(1)
         if (selectedMonth == Month.JANUARY)
             selectedYear = selectedYear.plus(1)
-        _monthStatus.value = ResultState.Waiting
     }
 
     internal fun previousMonth() {
         selectedMonth = selectedMonth.minus(1)
         if (selectedMonth == Month.DECEMBER)
             selectedYear = selectedYear.minus(1)
+    }
+
+    internal fun resetMonthStatus() {
         _monthStatus.value = ResultState.Waiting
+    }
+
+    internal fun resetSaveStatus() {
+        _saveStatus.value = ResultState.Waiting
     }
 
     internal fun getCurrentMonthAsString(): String = selectedMonth.name

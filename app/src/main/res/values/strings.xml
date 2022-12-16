@@ -7,4 +7,11 @@
     <string name="thursday">Thu</string>
     <string name="friday">Fri</string>
     <string name="saturday">Sat</string>
+    <string name="enter_weight_for_value">Enter weight for %1$s</string>
+    <string name="enter_weight_here">Enter weight here</string>
+    <string name="grams">grams</string>
+    <string name="enter_correct_value">Please enter correct value here</string>
+    <string name="weight_record_successfully_added">Weight record successfully added…</string>
+    <string name="error_occurred_try_again">Some error occurred! Please try again…</string>
+    <string name="submit">Submit</string>
 </resources>
