@@ -73,7 +73,14 @@ private fun CalendarScreen(calendarViewModel: CalendarViewModel, enterWeight: (C
             Heading()
             when (monthStatus) {
                 is ResultState.Waiting -> calendarViewModel.loadDataForSelectedMonth()
-                is ResultState.Loading -> CircularProgressIndicator()
+                is ResultState.Loading -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(color = DARK_PINK_HEADING)
+                    }
+                }
                 is ResultState.Success -> {
                     Column {
                         CalendarHeading(
